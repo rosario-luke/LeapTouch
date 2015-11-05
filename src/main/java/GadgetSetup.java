@@ -3,6 +3,7 @@ import com.leapmotion.leap.Frame;
 import com.leapmotion.leap.Listener;
 import com.leapmotion.leap.Vector;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class GadgetSetup extends Listener {
@@ -10,16 +11,18 @@ public class GadgetSetup extends Listener {
     private static float movementTolerance = 5;
     private Controller controller;
     private LinkedList<Vector[]> lastFrames;
+    private ArrayList<Command> commands;
     private boolean hasFinishedSetup;
     private Object syncObject;
     Vector topLeft;
     Vector bottomRight;
 
-    public GadgetSetup() {
+    public GadgetSetup(ArrayList<Command> acceptedCommands) {
         System.out.println("Initializing controller...");
         syncObject = new Object();
         lastFrames = new LinkedList<Vector[]>();
         controller = new Controller();
+        commands = acceptedCommands;
     }
 
 
@@ -119,6 +122,32 @@ public class GadgetSetup extends Listener {
         }
         System.out.print("Gadget Name: ");
         String gadgetName = ConsoleUtilities.getConsoleInput();
-        return new ScreenGadget(topLeft, bottomRight, gadgetName);
+
+        if (commands.size() > 0) {
+            yesOrNo = ConsoleUtilities.askYesOrNo("Would you like to add a command? (Y/N)");
+            if (!yesOrNo) {
+                return new ScreenGadget(topLeft, bottomRight, gadgetName);
+            } else {
+                Command chosenCommand = queryUserForCommand();
+                return new ScreenGadget(topLeft, bottomRight, gadgetName, chosenCommand);
+            }
+        } else {
+            return new ScreenGadget(topLeft, bottomRight, gadgetName);
+        }
+
+    }
+
+
+    private Command queryUserForCommand(){
+        System.out.println("Which command would you like to add?");
+        for (int i = 0; i < commands.size(); i ++){
+            System.out.println(i + ") " + commands.get(i).getTitle());
+        }
+        System.out.println(commands.size() + ") None" );
+        Integer choice = ConsoleUtilities.getConsoleNumber();
+        if (choice >= 0 && choice < commands.size()){
+            return commands.get(choice);
+        }
+        return null;
     }
 }

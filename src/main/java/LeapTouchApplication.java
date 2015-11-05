@@ -8,11 +8,14 @@ public class LeapTouchApplication extends Listener{
 
     private static Controller controller;
     private static PointListener listener;
+    private static CommandParser commandParser;
+
     public static void main(String[] args){
 
         System.out.println("Started application");
         controller = new Controller();
         listener = new PointListener(controller);
+        commandParser = new CommandParser(null);
         listener.start();
 
         boolean finished = false;
@@ -124,7 +127,7 @@ public class LeapTouchApplication extends Listener{
      * @return a new ScreenGadget or null if an error occurred
      */
     private static ScreenGadget getScreenGadgetWithGadgetSetup(){
-        GadgetSetup screenSetupHelper = new GadgetSetup();
+        GadgetSetup screenSetupHelper = new GadgetSetup(commandParser.getCommands());
         boolean caughtError = true;
         while(caughtError) {
             try {
@@ -141,5 +144,4 @@ public class LeapTouchApplication extends Listener{
         }
         return null;
     }
-
 }

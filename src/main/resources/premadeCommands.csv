@@ -1,0 +1,2 @@
+Play/Pause Spotify (OSX Only),osascript -e "tell application \"Spotify\" to playpause"
+Open Chrome (OSX Only), open -a "Google Chrome"

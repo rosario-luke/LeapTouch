@@ -124,6 +124,7 @@ public class PointListener extends Listener {
         for (int i = 0; i < myScreenGadgets.size(); i++){
             ScreenGadget curGadg = myScreenGadgets.get(i);
             if (curGadg.contains(p0.getX(), p0.getY())){
+                curGadg.executeCommand();
                 System.out.println("Used Gadget : " + curGadg.getGadgetName());
             }
         }
