@@ -1,3 +1,5 @@
+package LeapInterface;
+
 import com.leapmotion.leap.Controller;
 import com.leapmotion.leap.Frame;
 import com.leapmotion.leap.Listener;
@@ -16,6 +18,8 @@ public class GadgetSetup extends Listener {
     private Object syncObject;
     Vector topLeft;
     Vector bottomRight;
+    Vector nTopLeft;
+    Vector nBottomRight;
 
     public GadgetSetup(ArrayList<Command> acceptedCommands) {
         System.out.println("Initializing controller...");
@@ -27,8 +31,8 @@ public class GadgetSetup extends Listener {
 
 
     /**
-     * Waits on the controller and GadgetSetup to finish selecting corners
-     * @return new ScreenGadget created
+     * Waits on the controller and LeapInterface.GadgetSetup to finish selecting corners
+     * @return new LeapInterface.ScreenGadget created
      * @throws InterruptedException
      */
     public ScreenGadget waitForSetUp() throws InterruptedException {
@@ -54,7 +58,7 @@ public class GadgetSetup extends Listener {
 
     /**
      * Invoked when controller has a frame
-     * Filters out random movements and finds coordinates to set new ScreenGadget to
+     * Filters out random movements and finds coordinates to set new LeapInterface.ScreenGadget to
      * @param controller
      */
     public void onFrame(Controller controller) {
@@ -79,8 +83,10 @@ public class GadgetSetup extends Listener {
                 }
 
                 Vector point = currentFrame.pointables().frontmost().stabilizedTipPosition();
+                Vector normalizedPoint = currentFrame.interactionBox().normalizePoint(point, false);
                 if (topLeft == null){
                     topLeft = point;
+                    nTopLeft = normalizedPoint;
                     System.out.println("Set topLeft to : (" + topLeft.getX() + " , " + topLeft.getY() + " ) ");
                     try{
                         Thread.sleep(2000);
@@ -92,6 +98,7 @@ public class GadgetSetup extends Listener {
                     return;
                 }
                 bottomRight = point;
+                nBottomRight = normalizedPoint;
                 System.out.println("Set bottomRight to : (" + bottomRight.getX() + " , " + bottomRight.getY() + " ) ");
 
 
@@ -110,7 +117,7 @@ public class GadgetSetup extends Listener {
 
     /**
      * Ask user to agree to found coordinates
-     * @return Null (if user dislikes coordinates) or new ScreenGadget representing found coordinates
+     * @return Null (if user dislikes coordinates) or new LeapInterface.ScreenGadget representing found coordinates
      */
     private ScreenGadget createScreenGadget() {
         System.out.println("Set topLeft to : (" + topLeft.getX() + " , " + topLeft.getY() + " ) ");
@@ -132,7 +139,7 @@ public class GadgetSetup extends Listener {
                 return new ScreenGadget(topLeft, bottomRight, gadgetName, chosenCommand);
             }
         } else {
-            return new ScreenGadget(topLeft, bottomRight, gadgetName);
+            return new ScreenGadget(topLeft,  bottomRight,  gadgetName);
         }
 
     }

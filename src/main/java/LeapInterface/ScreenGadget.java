@@ -1,3 +1,5 @@
+package LeapInterface;
+
 import com.leapmotion.leap.Vector;
 
 /**
@@ -11,20 +13,21 @@ public class ScreenGadget {
     private Command gadgetCommand;
 
 
-    public ScreenGadget(Vector topLeftPoint, Vector bottomRightPoint, String gName){
-        topLeft = topLeftPoint;
-        bottomRight = bottomRightPoint;
-        gadgetName = gName;
+    public ScreenGadget(Vector topLeft, Vector bottomRight, String gadgetName){
+        this.topLeft = topLeft;
+        this.bottomRight = bottomRight;
+        this.gadgetName = gadgetName;
         gadgetCommand = null;
     }
 
 
-    public ScreenGadget(Vector topLeftPoint, Vector bottomRightPoint, String gName, Command command){
-        topLeft = topLeftPoint;
-        bottomRight = bottomRightPoint;
-        gadgetName = gName;
+    public ScreenGadget(Vector topLeft,  Vector bottomRight, String gadgetName, Command command){
+        this.topLeft = topLeft;
+        this.bottomRight = bottomRight;
+        this.gadgetName = gadgetName;
         gadgetCommand = command;
     }
+
 
     public Vector getTopLeft(){
         return topLeft;
@@ -33,6 +36,18 @@ public class ScreenGadget {
 
     public Vector getBottomRight(){
         return bottomRight;
+    }
+
+
+    public Vector getNormalizedBottomRight() {
+        if (PointListener.currentInteractionBox == null){ return null; }
+        return PointListener.currentInteractionBox.normalizePoint(bottomRight);
+    }
+
+
+    public Vector getNormalizedTopLeft() {
+        if (PointListener.currentInteractionBox == null){ return null; }
+        return PointListener.currentInteractionBox.normalizePoint(topLeft);
     }
 
 
@@ -52,7 +67,7 @@ public class ScreenGadget {
 
 
     /**
-     * Checks whether the given coordinates fall within the ScreenGadget
+     * Checks whether the given coordinates fall within the LeapInterface.ScreenGadget
      * @param x
      * @param y
      * @return
@@ -60,6 +75,13 @@ public class ScreenGadget {
     public boolean contains(float x, float y ){
         return x >= topLeft.getX() && x <= bottomRight.getX()
                 && y <= topLeft.getY() && y >= bottomRight.getY();
+    }
+
+
+    public boolean contains(ScreenGadget other){
+        boolean containsTL = contains(other.topLeft.getX(), other.topLeft.getY());
+        boolean containsBR = contains(other.bottomRight.getX(), other.bottomRight.getY());
+        return containsTL || containsBR;
     }
 
 

@@ -1,57 +1,55 @@
+package LeapInterface;
+
 import com.leapmotion.leap.Controller;
 import com.leapmotion.leap.Listener;
 
 import java.util.ArrayList;
 
 
-public class LeapTouchApplication extends Listener{
+public class LeapTouchController extends Listener{
 
-    private static Controller controller;
-    private static PointListener listener;
-    private static CommandParser commandParser;
+    private Controller controller;
+    private PointListener listener;
+    private CommandParser commandParser;
 
-    public static void main(String[] args){
 
-        System.out.println("Started application");
+    public LeapTouchController(){
         controller = new Controller();
         listener = new PointListener(controller);
         commandParser = new CommandParser(null);
         listener.start();
+    }
 
-        boolean finished = false;
-        Integer choice;
-        while (!finished){
-            printMenu();
-            choice = ConsoleUtilities.getConsoleNumber();
 
-            switch(choice){
-                case 1:
-                    addGadget();
-                    break;
-                case 2:
-                    listen();
-                    break;
-                case 3:
-                    removeGadgets();
-                    break;
-                case 4:
-                    finished = true;
-                    break;
-                default:
-                    System.out.println("Invalid Input");
-            }
-        }
-        listener.stop();
+    public PointListener getPointListener(){
+        return listener;
+    }
 
-        System.out.println("");
-        System.out.println("Goodbye");
+
+    public CommandParser getCommandParser(){
+        return commandParser;
+    }
+
+
+    public boolean addScreenGadget(ScreenGadget screenGadget){
+        return listener.addGadget(screenGadget);
+    }
+
+
+    public GadgetSetup getGadgetSetup(){
+        return new GadgetSetup(commandParser.getCommands());
+    }
+
+
+    public Controller getController(){
+        return controller;
     }
 
 
     /**
-     * Stops the currently running listener and gets a new ScreenGadget
+     * Stops the currently running listener and gets a new LeapInterface.ScreenGadget
      */
-    public static void addGadget(){
+    public void addGadget(){
         listener.stop();
         boolean shouldContinue = true;
         while(shouldContinue) {
@@ -64,6 +62,7 @@ public class LeapTouchApplication extends Listener{
                 System.out.println("Cannot add gadget that intersects another");
                 shouldContinue = ConsoleUtilities.askYesOrNo("Do you want to try again?");
             } else {
+                System.out.println("Successfully Added");
                 shouldContinue = false;
             }
         }
@@ -74,7 +73,7 @@ public class LeapTouchApplication extends Listener{
     /**
      * Shows the output of the listener
      */
-    public static void listen(){
+    public void listen(){
         listener.setOutput(true);
         ConsoleUtilities.waitForInput();
         listener.setOutput(false);
@@ -85,7 +84,7 @@ public class LeapTouchApplication extends Listener{
      * Displays all the gadgets and their coordinates to the user
      * Allows the user to remove any Gadget inside the list
      */
-    public static void removeGadgets(){
+    public  void removeGadgets(){
         ArrayList<ScreenGadget> gadgets = listener.getScreenGadgets();
 
         if (gadgets.size() == 0){
@@ -123,10 +122,10 @@ public class LeapTouchApplication extends Listener{
     }
 
     /**
-     * Helper function for addGadget that interacts with GadgetSetup class
-     * @return a new ScreenGadget or null if an error occurred
+     * Helper function for addGadget that interacts with LeapInterface.GadgetSetup class
+     * @return a new LeapInterface.ScreenGadget or null if an error occurred
      */
-    private static ScreenGadget getScreenGadgetWithGadgetSetup(){
+    private ScreenGadget getScreenGadgetWithGadgetSetup(){
         GadgetSetup screenSetupHelper = new GadgetSetup(commandParser.getCommands());
         boolean caughtError = true;
         while(caughtError) {
@@ -145,3 +144,43 @@ public class LeapTouchApplication extends Listener{
         return null;
     }
 }
+
+
+/**
+ *     public static void main(String[] args){
+
+ System.out.println("Started application");
+ controller = new Controller();
+ listener = new LeapInterface.PointListener(controller);
+ commandParser = new LeapInterface.CommandParser(null);
+ listener.start();
+
+ boolean finished = false;
+ Integer choice;
+ while (!finished){
+ printMenu();
+ choice = LeapInterface.ConsoleUtilities.getConsoleNumber();
+
+ switch(choice){
+ case 1:
+ addGadget();
+ break;
+ case 2:
+ listen();
+ break;
+ case 3:
+ removeGadgets();
+ break;
+ case 4:
+ finished = true;
+ break;
+ default:
+ System.out.println("Invalid Input");
+ }
+ }
+ listener.stop();
+
+ System.out.println("");
+ System.out.println("Goodbye");
+ }
+ */

@@ -1,3 +1,5 @@
+package LeapInterface;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -62,4 +64,21 @@ public class CommandParser {
     }
 
 
+    public String[] getAllCommandNames(){
+        String[] nameArray = new String[myCommands.size()];
+        for (int i =0; i < myCommands.size(); i++){
+            nameArray[i] = myCommands.get(i).getTitle();
+        }
+        return nameArray;
+    }
+
+
+    public Command getCommandByTitle(String title){
+        for (Command command : myCommands){
+            if (command.getTitle().equals(title)){
+                return command;
+            }
+        }
+        return null;
+    }
 }

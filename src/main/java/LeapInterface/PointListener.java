@@ -1,3 +1,5 @@
+package LeapInterface;
+
 import com.leapmotion.leap.*;
 
 import java.util.ArrayList;
@@ -12,11 +14,17 @@ public class PointListener extends Listener {
     private Controller myController;
     private ArrayList<ScreenGadget> myScreenGadgets;
     private boolean shouldOutput;
+    private boolean isListening;
+    private boolean changedGadgets = false;
+    private Vector lastFingerPosition = null;
+    public static InteractionBox currentInteractionBox;
+
 
     public PointListener(Controller controller) {
         myController = controller;
         myScreenGadgets = new ArrayList<ScreenGadget>();
         shouldOutput = false;
+        isListening = false;
     }
 
 
@@ -31,6 +39,7 @@ public class PointListener extends Listener {
         myController.enableGesture(Gesture.Type.TYPE_SCREEN_TAP, true);
         myController.config().save();
         myController.addListener(this);
+        isListening = true;
     }
 
 
@@ -40,6 +49,7 @@ public class PointListener extends Listener {
     public void stop(){
         myController.enableGesture(Gesture.Type.TYPE_SCREEN_TAP, false);
         myController.removeListener(this);
+        isListening = false;
     }
 
 
@@ -59,7 +69,8 @@ public class PointListener extends Listener {
      */
     public void onFrame(Controller controller) {
         Frame currentFrame = controller.frame();
-
+        updateInteractionBox(currentFrame.interactionBox());
+        updateFingerPosition(currentFrame);
         for (Gesture g : currentFrame.gestures()){
             if (g.type() == ScreenTapGesture.classType()){
                 try {
@@ -72,6 +83,45 @@ public class PointListener extends Listener {
     }
 
 
+    public void updateInteractionBox(InteractionBox ibox){
+        if (currentInteractionBox == null && ibox.isValid()){
+            currentInteractionBox = ibox;
+        }
+        if (ibox.isValid() && ibox.height() > currentInteractionBox.height() &&
+                ibox.width() > currentInteractionBox.width()){
+            currentInteractionBox = ibox;
+        }
+    }
+
+
+    public void updateFingerPosition(Frame frame){
+        lastFingerPosition = frame.pointables().frontmost().stabilizedTipPosition();
+    }
+
+
+    public Vector getNormalizedFingerPosition(){
+        if (currentInteractionBox != null) {
+            return currentInteractionBox.normalizePoint(lastFingerPosition);
+        } else {
+            return null;
+        }
+    }
+
+
+    public boolean isListening(){
+        return isListening;
+    }
+
+
+    public boolean gadgetsChanged(){
+        if (changedGadgets){
+            changedGadgets = false;
+            return true;
+        }
+        return false;
+    }
+
+
     /**
      * Adds a gadget to the list of current Gadgets
      * Making sure that it does not intersect with any currently existing gadgets
@@ -79,8 +129,13 @@ public class PointListener extends Listener {
      * @return Whether this gadget was successfully added
      */
     public boolean addGadget(ScreenGadget newGadget){
+        for (ScreenGadget curGadg : myScreenGadgets){
+            if (curGadg.contains(newGadget) || newGadget.contains(curGadg)){
+                return false;
+            }
+        }
         myScreenGadgets.add(newGadget);
-        // TODO: Add functionality to check for intersections
+        changedGadgets = true;
         return true;
     }
 
@@ -91,6 +146,7 @@ public class PointListener extends Listener {
      */
     public void removeGadget(ScreenGadget deleteGadget){
         myScreenGadgets.remove(deleteGadget);
+        changedGadgets = true;
     }
 
 
@@ -99,6 +155,7 @@ public class PointListener extends Listener {
      */
     public void removeAllGadgets(){
         myScreenGadgets.clear();
+        changedGadgets = true;
     }
 
 
@@ -113,7 +170,7 @@ public class PointListener extends Listener {
 
     /**
      * Analyzes the current gesture and compares it to current gadgets
-     * If gesture falls within a ScreenGadget's range an action is done
+     * If gesture falls within a LeapInterface.ScreenGadget's range an action is done
      * @param g Gesture to be analyzed
      */
     private void analyzeGesture(Gesture g){
