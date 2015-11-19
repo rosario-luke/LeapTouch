@@ -3,10 +3,10 @@ package LeapInterface;
 public class Command {
 
     private String title;
-    private String command;
+    private String[] command;
 
 
-    public Command(String cTitle, String cCommand){
+    public Command(String cTitle, String[] cCommand){
         title = cTitle;
         command = cCommand;
     }
@@ -17,7 +17,7 @@ public class Command {
     }
 
 
-    public String getCommand(){
+    public String[] getCommand(){
         return command;
     }
 }

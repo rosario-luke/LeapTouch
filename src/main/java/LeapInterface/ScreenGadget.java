@@ -66,6 +66,9 @@ public class ScreenGadget {
     }
 
 
+    public Command getGadgetCommand(){ return gadgetCommand; }
+
+
     /**
      * Checks whether the given coordinates fall within the LeapInterface.ScreenGadget
      * @param x
@@ -92,7 +95,7 @@ public class ScreenGadget {
 
         try {
             System.out.println(gadgetCommand.getCommand());
-            Process p = Runtime.getRuntime().exec("osascript -e \"tell application \\\"Spotify\\\" to playpause\"");
+            Process p = Runtime.getRuntime().exec(gadgetCommand.getCommand());
 
             int i;
             while ((i = p.getInputStream().read()) != -1) {
@@ -105,5 +108,16 @@ public class ScreenGadget {
             System.out.println("Caught exception : " + e.getMessage());
             System.out.println(e.getStackTrace());
         }
+    }
+
+
+    @Override
+    public String toString(){
+        return String.format("%s: %s", getGadgetName(), getGadgetCommand().getTitle());
+    }
+
+
+    public void setGadgetCommand(Command command){
+        gadgetCommand = command;
     }
 }

@@ -1,2 +1,4 @@
-Play/Pause Spotify (OSX Only),osascript -e "tell application \"Spotify\" to playpause"
-Open Chrome (OSX Only), open -a "Google Chrome"
+Play/Pause Spotify (OSX Only),osascript,-e,tell application "Spotify" to playpause
+Launch Spotify (OSX Only),osascript,-e,launch application "Spotify"
+Activate Spotify (OSX Only),osascript,-e,activate application "Spotify"
+Activate IntelliJ (OSX Only),osascript,-e,activate application "IntelliJ Idea"

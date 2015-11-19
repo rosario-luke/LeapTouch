@@ -14,8 +14,8 @@ public class GadgetPanel extends JPanel {
 
     private PointListener pointListener;
     private GUIGadgetSetup gadgetSetup;
-    private float FINGER_RADIUS_RATIO = 0.07f;
-    private float CORNER_RADIUS_RATIO = 0.03f;
+    private float FINGER_RADIUS_RATIO = 0.035f;
+    private float CORNER_RADIUS_RATIO = 0.015f;
 
 
     public GadgetPanel(PointListener pointListener){
@@ -74,7 +74,7 @@ public class GadgetPanel extends JPanel {
         float circleX = getWidth() * fingerPosition.getX();
         float circleY = getHeight() * (1 - fingerPosition.getY());
         float radius = getWidth() * FINGER_RADIUS_RATIO;
-        g.drawOval((int) circleX, (int) circleY, (int) radius, (int) radius);
+        drawCircle(g, (int)circleX, (int)circleY, (int) radius);
     }
 
 
@@ -87,14 +87,21 @@ public class GadgetPanel extends JPanel {
             g.setColor(Color.orange);
             float circleX = getWidth() * topLeft.getX();
             float circleY = getHeight() * (1 - topLeft.getY());
-            g.drawOval((int)circleX, (int)circleY, (int) radius, (int) radius);
+            drawCircle(g, (int)circleX, (int)circleY, (int) radius);
         }
 
         if (bottomRight != null){
             g.setColor(Color.blue);
             float circleX = getWidth() * bottomRight.getX();
             float circleY = getHeight() * (1 - bottomRight.getY());
-            g.drawOval((int)circleX, (int)circleY, (int) radius, (int) radius);
+            drawCircle(g, (int)circleX, (int)circleY, (int) radius);
         }
+    }
+
+
+    public void drawCircle(Graphics g, int centerX, int centerY, int radius){
+        int topLeftX = centerX - radius;
+        int topLeftY = centerY - radius;
+        g.drawOval(topLeftX, topLeftY, radius*2, radius*2);
     }
 }

@@ -136,6 +136,8 @@ public class PointListener extends Listener {
         }
         myScreenGadgets.add(newGadget);
         changedGadgets = true;
+        System.out.println(newGadget.getTopLeftString());
+        System.out.println(newGadget.getBottomRightString());
         return true;
     }
 

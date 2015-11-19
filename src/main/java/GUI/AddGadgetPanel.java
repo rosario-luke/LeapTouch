@@ -146,7 +146,6 @@ public class AddGadgetPanel extends JPanel {
             }
         });
 
-
         clearTopLeftBtn.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 if (gadgetSetup != null){
@@ -155,7 +154,6 @@ public class AddGadgetPanel extends JPanel {
             }
         });
 
-
         clearBottomRightBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (gadgetSetup != null){
@@ -163,7 +161,6 @@ public class AddGadgetPanel extends JPanel {
                 }
             }
         });
-
 
         okayButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -224,7 +221,7 @@ public class AddGadgetPanel extends JPanel {
                 getCommandByTitle((String)commandComboBox.getSelectedItem());
 
         ScreenGadget screenGadget = new ScreenGadget(gadgetSetup.getRawTopLeft(),
-                gadgetSetup.getNormalizedBottomRight(), gadgetNameField.getText(), selectedCommand);
+                gadgetSetup.getRawBottomRight(), gadgetNameField.getText(), selectedCommand);
 
         if (!myController.addScreenGadget(screenGadget)){
             JOptionPane.showMessageDialog(this,
@@ -242,7 +239,7 @@ public class AddGadgetPanel extends JPanel {
             gadgetNameField.setText(NAME_FIELD_STRING);
             commandComboBox.setSelectedIndex(0);
         }
-
     }
+
 }
 

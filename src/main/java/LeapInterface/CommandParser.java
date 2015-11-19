@@ -34,11 +34,16 @@ public class CommandParser {
             {
                 String[] tokens = line.split(DELIMITER);
 
-                // There should only be two tokens, if there are more skip the line
-                if (tokens.length != 2){
+                // There should be more than 1 token, if there are more skip the line
+                if (tokens.length < 2){
                     continue;
                 }
-                myCommands.add(new Command(tokens[0], tokens[1]));
+
+                String[] args = new String[tokens.length-1];
+                for (int i = 1; i < tokens.length; i++){
+                    args[i - 1] = tokens[i];
+                }
+                myCommands.add(new Command(tokens[0], args));
             }
             System.out.println("Parsed Commands");
             for (Command c : myCommands){

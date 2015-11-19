@@ -7,9 +7,7 @@ import com.leapmotion.leap.Vector;
 
 import java.util.LinkedList;
 
-/**
- * Created by lucasrosario on 11/11/15.
- */
+
 public class GUIGadgetSetup extends Listener {
 
     private static float movementTolerance = 5;
@@ -43,7 +41,6 @@ public class GUIGadgetSetup extends Listener {
                 return;
             }
 
-            System.out.println(currentTip);
             Vector[] nVec = {currentTip, currentFrame.pointables().frontmost().direction() };
             lastFrames.addFirst(nVec);
             if (lastFrames.size() >= 100) {
@@ -58,7 +55,6 @@ public class GUIGadgetSetup extends Listener {
                 Vector point = currentFrame.pointables().frontmost().stabilizedTipPosition();
                 if (topLeft == null){
                     topLeft = point;
-                    System.out.println("Set topLeft to : (" + topLeft.getX() + " , " + topLeft.getY() + " ) ");
                     try{
                         Thread.sleep(1500);
                     } catch(Exception e){
