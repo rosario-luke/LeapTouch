@@ -220,10 +220,18 @@ public class AddGadgetPanel extends JPanel {
         Command selectedCommand = myController.getCommandParser().
                 getCommandByTitle((String)commandComboBox.getSelectedItem());
 
-        ScreenGadget screenGadget = new ScreenGadget(gadgetSetup.getRawTopLeft(),
-                gadgetSetup.getRawBottomRight(), gadgetNameField.getText(), selectedCommand);
+        boolean successfulAdd;
+        if (selectedCommand.isTrackPad()){
+            LeapTrackPad trackPad = new LeapTrackPad(gadgetSetup.getRawTopLeft(),
+                    gadgetSetup.getRawBottomRight(), gadgetNameField.getText(), selectedCommand);
+            successfulAdd = myController.addTrackPad(trackPad);
+        } else {
+            ScreenGadget screenGadget = new ScreenGadget(gadgetSetup.getRawTopLeft(),
+                    gadgetSetup.getRawBottomRight(), gadgetNameField.getText(), selectedCommand);
+            successfulAdd = myController.addScreenGadget(screenGadget);
+        }
 
-        if (!myController.addScreenGadget(screenGadget)){
+        if (!successfulAdd){
             JOptionPane.showMessageDialog(this,
                     "Screen Gadget could not be added due to intersecting",
                     "Intersection Error",

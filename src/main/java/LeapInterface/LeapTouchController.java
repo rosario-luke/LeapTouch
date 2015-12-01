@@ -3,8 +3,6 @@ package LeapInterface;
 import com.leapmotion.leap.Controller;
 import com.leapmotion.leap.Listener;
 
-import java.util.ArrayList;
-
 
 public class LeapTouchController extends Listener{
 
@@ -33,6 +31,11 @@ public class LeapTouchController extends Listener{
 
     public boolean addScreenGadget(ScreenGadget screenGadget){
         return listener.addGadget(screenGadget);
+    }
+
+
+    public boolean addTrackPad(LeapTrackPad trackPad) {
+        return listener.addTrackPad(trackPad);
     }
 
 
@@ -71,57 +74,6 @@ public class LeapTouchController extends Listener{
 
 
     /**
-     * Shows the output of the listener
-     */
-    public void listen(){
-        listener.setOutput(true);
-        ConsoleUtilities.waitForInput();
-        listener.setOutput(false);
-    }
-
-
-    /**
-     * Displays all the gadgets and their coordinates to the user
-     * Allows the user to remove any Gadget inside the list
-     */
-    public  void removeGadgets(){
-        ArrayList<ScreenGadget> gadgets = listener.getScreenGadgets();
-
-        if (gadgets.size() == 0){
-            System.out.println("No gadgets currently set");
-            return;
-        }
-
-        for (int i = 0; i < gadgets.size(); i++){
-            ScreenGadget curGadg = gadgets.get(i);
-            System.out.println(i + ") Remove " + curGadg.getGadgetName() + " : TopLeft " + curGadg.getTopLeftString() +
-                    "     BottomRight " + curGadg.getBottomRightString());
-        }
-        System.out.println(gadgets.size() + ") Exit");
-
-        Integer choice = ConsoleUtilities.getConsoleNumber();
-
-        if (choice >= 0 && choice < gadgets.size()){
-            System.out.println("Removed Gadget: " + gadgets.get(choice).getGadgetName());
-            listener.removeGadget(gadgets.get(choice));
-        } else {
-            System.out.println("Exiting");
-        }
-    }
-
-    /**
-     * Prints menu options
-     */
-    public static void printMenu(){
-        System.out.println("-------- TOUCH ANYWHERE MENU ----------");
-        System.out.println("1) Add Gadget");
-        System.out.println("2) Listen");
-        System.out.println("3) Remove Gadgets");
-        System.out.println("4) Exit");
-        System.out.print("#: ");
-    }
-
-    /**
      * Helper function for addGadget that interacts with LeapInterface.GadgetSetup class
      * @return a new LeapInterface.ScreenGadget or null if an error occurred
      */
@@ -145,42 +97,3 @@ public class LeapTouchController extends Listener{
     }
 }
 
-
-/**
- *     public static void main(String[] args){
-
- System.out.println("Started application");
- controller = new Controller();
- listener = new LeapInterface.PointListener(controller);
- commandParser = new LeapInterface.CommandParser(null);
- listener.start();
-
- boolean finished = false;
- Integer choice;
- while (!finished){
- printMenu();
- choice = LeapInterface.ConsoleUtilities.getConsoleNumber();
-
- switch(choice){
- case 1:
- addGadget();
- break;
- case 2:
- listen();
- break;
- case 3:
- removeGadgets();
- break;
- case 4:
- finished = true;
- break;
- default:
- System.out.println("Invalid Input");
- }
- }
- listener.stop();
-
- System.out.println("");
- System.out.println("Goodbye");
- }
- */

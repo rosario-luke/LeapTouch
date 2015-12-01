@@ -20,4 +20,10 @@ public class Command {
     public String[] getCommand(){
         return command;
     }
+
+
+    public boolean isTrackPad(){
+        return title.toLowerCase().contains("trackpad");
+    }
+
 }

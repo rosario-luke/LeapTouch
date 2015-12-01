@@ -13,7 +13,7 @@ public class PointListener extends Listener {
 
     private Controller myController;
     private ArrayList<ScreenGadget> myScreenGadgets;
-    private boolean shouldOutput;
+    private ArrayList<LeapTrackPad> myTrackPads;
     private boolean isListening;
     private boolean changedGadgets = false;
     private Vector lastFingerPosition = null;
@@ -23,7 +23,7 @@ public class PointListener extends Listener {
     public PointListener(Controller controller) {
         myController = controller;
         myScreenGadgets = new ArrayList<ScreenGadget>();
-        shouldOutput = false;
+        myTrackPads = new ArrayList<LeapTrackPad>();
         isListening = false;
     }
 
@@ -53,14 +53,6 @@ public class PointListener extends Listener {
     }
 
 
-    /**
-     * Sets whether should output to console when gadgets are hit
-     * @param sOutput Whether this class should output to console
-     */
-    public void setOutput(boolean sOutput){
-        shouldOutput = sOutput;
-    }
-
 
     /**
      * Called when controller updates its frame
@@ -71,6 +63,7 @@ public class PointListener extends Listener {
         Frame currentFrame = controller.frame();
         updateInteractionBox(currentFrame.interactionBox());
         updateFingerPosition(currentFrame);
+        checkTrackPads();
         for (Gesture g : currentFrame.gestures()){
             if (g.type() == ScreenTapGesture.classType()){
                 try {
@@ -83,6 +76,12 @@ public class PointListener extends Listener {
     }
 
 
+    /**
+     * Updates the current interaction box that we use to normalize points to our screen
+     * We want to use the biggest interaction box possible, thus everytime we see a larger one
+     * we set it to our current InterationBox
+     * @param ibox - InteractionBox of the current frame
+     */
     public void updateInteractionBox(InteractionBox ibox){
         if (currentInteractionBox == null && ibox.isValid()){
             currentInteractionBox = ibox;
@@ -94,11 +93,33 @@ public class PointListener extends Listener {
     }
 
 
+    /**
+     * Loops through the current track pads and looks to see if the finger can interact
+     * with the trackpad
+     */
+    public void checkTrackPads(){
+        for (LeapTrackPad trackPad : myTrackPads){
+            if (trackPad.contains(lastFingerPosition.getX(), lastFingerPosition.getY())) {
+                trackPad.executeCommand(lastFingerPosition);
+            }
+        }
+    }
+
+
+    /**
+     * Updates last finger position seen to the current frontmost finger pointing at the screen
+     * @param frame
+     */
     public void updateFingerPosition(Frame frame){
         lastFingerPosition = frame.pointables().frontmost().stabilizedTipPosition();
     }
 
 
+    /**
+     * Normalizes the finger position to the current interaction box that we are using
+     * for use in drawing the related application coordinate
+     * @return Vector containing the normalized coordinate
+     */
     public Vector getNormalizedFingerPosition(){
         if (currentInteractionBox != null) {
             return currentInteractionBox.normalizePoint(lastFingerPosition);
@@ -108,11 +129,19 @@ public class PointListener extends Listener {
     }
 
 
+    /**
+     * Returns if the PointListener is currently updating against the LeapController
+     * @return Boolean indicating if it changed
+     */
     public boolean isListening(){
         return isListening;
     }
 
 
+    /**
+     * Checks if gadgets have changed since the last time this method was called
+     * @return
+     */
     public boolean gadgetsChanged(){
         if (changedGadgets){
             changedGadgets = false;
@@ -142,12 +171,28 @@ public class PointListener extends Listener {
     }
 
 
+    public boolean addTrackPad(LeapTrackPad trackPad){
+        for (ScreenGadget curGadg : myScreenGadgets){
+            if (curGadg.contains(trackPad) || trackPad.contains(curGadg)){
+                return false;
+            }
+        }
+        myTrackPads.add(trackPad);
+        myScreenGadgets.add(trackPad);
+        changedGadgets = true;
+        return true;
+    }
+
+
     /**
      * Removes gadget from list of current Gadgets
      * @param deleteGadget Gadget to remove
      */
     public void removeGadget(ScreenGadget deleteGadget){
         myScreenGadgets.remove(deleteGadget);
+        if (deleteGadget instanceof LeapTrackPad){
+            myTrackPads.remove(deleteGadget);
+        }
         changedGadgets = true;
     }
 
@@ -189,41 +234,6 @@ public class PointListener extends Listener {
         }
     }
 
-/**
-     Old Gesture Analysis
-
-            Vector p1 = p0.plus(stg.direction().times(100));
-        for (int i = 0; i < myScreenGadgets.size(); i++){
-            Vector intersect = findRayIntersection(p0, p1,
-                    myScreenGadgets.get(i).getNormal(), myScreenGadgets.get(i).getPoint());
-            if (intersect == null){
-                continue;
-            }
-            float distance = myScreenGadgets.get(i).getPoint().distanceTo(intersect);
-            if (shouldOutput && myScreenGadgets.get(i).withinDistance(distance) && distance < minDistance) {
-                closestGadget = myScreenGadgets.get(i);
-                minDistance = distance;
-            }
-        }
-        if (closestGadget != null && shouldOutput) {
-            System.out.println("Used Gadget : " + closestGadget.getGadgetName());
-        }
-
-
-
-
-
-    private Vector findRayIntersection(Vector p0, Vector p1, Vector pNormal, Vector pPoint) {
-        float denom = (pNormal.dot(p1.minus(p0)));
-        float rI = (pNormal.dot(pPoint.minus(p0))) / denom;
-        if (Math.abs(denom) < 0.001 || (Math.abs(denom) > 0.001 && rI < 0)) {
-            return null;
-        } else {
-            return p0.plus((p1.minus(p0).times(rI)));
-        }
-    }
-
- **/
 
 
 }

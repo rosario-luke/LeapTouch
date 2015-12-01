@@ -4,8 +4,6 @@ import LeapInterface.LeapTouchController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 
 public class LeapApplication extends JFrame{
@@ -32,55 +30,21 @@ public class LeapApplication extends JFrame{
         topPanel.setLayout( new BorderLayout() );
         getContentPane().add(topPanel);
 
-        createMainPanel();
         createVisPanel();
         createAddPanel();
         createEditPanel();
 
         tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Main", mainPanel);
         tabbedPane.addTab("Vis", visPanel);
         tabbedPane.addTab("Add", addPanel);
         tabbedPane.addTab("Edit", editPanel);
         topPanel.add(tabbedPane, BorderLayout.CENTER);
-        //tabbedPane.setTabPlacement(JTabbedPane.LEFT);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
 
-    public void createMainPanel()
-    {
-        mainPanel = new JPanel();
-        mainPanel.setLayout(null);
 
-        JLabel label1 = new JLabel( "Username:" );
-        label1.setBounds( 10, 15, 150, 20 );
-        mainPanel.add(label1);
-
-        JTextField field = new JTextField();
-        field.setBounds(10, 35, 150, 20);
-        mainPanel.add(field);
-
-        JLabel label2 = new JLabel( "Password:" );
-        label2.setBounds(10, 60, 150, 20);
-        mainPanel.add(label2);
-
-        JPasswordField fieldPass = new JPasswordField();
-        fieldPass.setBounds( 10, 80, 150, 20 );
-        mainPanel.add(fieldPass);
-
-        JButton askButton = new JButton();
-        askButton.setBounds(10, 120, 100, 30);
-        askButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                myController.addGadget();
-            }
-        });
-
-        mainPanel.add(askButton);
-    }
 
 
     public void createVisPanel()

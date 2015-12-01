@@ -2,6 +2,7 @@ package GUI;
 
 import LeapInterface.Command;
 import LeapInterface.LeapTouchController;
+import LeapInterface.LeapTrackPad;
 import LeapInterface.ScreenGadget;
 
 import javax.swing.*;
@@ -149,6 +150,11 @@ public class EditGadgetPanel extends JPanel {
             }
         }
         currentGadget = toLoad;
+        if (currentGadget instanceof LeapTrackPad){
+            currentCommandComboBox.setEnabled(false);
+        } else {
+            currentCommandComboBox.setEnabled(true);
+        }
         currentGadgetLabel.setText(currentGadget.getGadgetName());
         currentCommandComboBox.setSelectedItem(currentGadget.getGadgetCommand().getTitle());
     }

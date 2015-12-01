@@ -10,6 +10,11 @@ import java.awt.*;
 import java.util.ArrayList;
 
 
+/**
+ * The GadgetPanel is a panel that can be dropped in anywhere and draws all the current gadgets used
+ * by the PointListener passed to it in the constructor. The GadgetPanel can also be used to draw where the current
+ * finger position is, as well as draw coordinates given to it by the GUIGadgetSetup
+ */
 public class GadgetPanel extends JPanel {
 
     private PointListener pointListener;
@@ -35,16 +40,27 @@ public class GadgetPanel extends JPanel {
     }
 
 
+    /**
+     * Sets the GUIGadgetSetup that the panel uses
+     * @param setup
+     */
     public void setGadgetSetup(GUIGadgetSetup setup){
         gadgetSetup = setup;
     }
 
 
+    /**
+     * Clears the GUIGadgetSetup
+     */
     public void clearGadgetSetup(){
         gadgetSetup = null;
     }
 
 
+    /**
+     * Custom method for painting all the current gadgets that the PointListener listens to
+     * @param g The graphics object to draw to
+     */
     public void drawGadgets(Graphics g){
         g.setColor(Color.red);
         ArrayList<ScreenGadget> myScreenGadgets = pointListener.getScreenGadgets();
@@ -65,6 +81,10 @@ public class GadgetPanel extends JPanel {
     }
 
 
+    /**
+     * Draws all the fingers on the graphics object using the normalized points stored in the PointListener
+     * @param g Graphics object used for drawing
+     */
     public void drawFingers(Graphics g){
         g.setColor(Color.green);
         Vector fingerPosition = pointListener.getNormalizedFingerPosition();
@@ -78,6 +98,10 @@ public class GadgetPanel extends JPanel {
     }
 
 
+    /**
+     * Draws the GUIGadgetSetup components such as current TopLeft and TopRight
+     * @param g Graphics object to draw with
+     */
     public void drawSetup(Graphics g){
         Vector topLeft = gadgetSetup.getNormalizedTopLeft();
         Vector bottomRight = gadgetSetup.getNormalizedBottomRight();
@@ -99,6 +123,13 @@ public class GadgetPanel extends JPanel {
     }
 
 
+    /**
+     * Draws a circle
+     * @param g Graphics object to draw with
+     * @param centerX Center x-coordinate for the circle
+     * @param centerY Center y-coordinate for the circle
+     * @param radius Radius of the circle
+     */
     public void drawCircle(Graphics g, int centerX, int centerY, int radius){
         int topLeftX = centerX - radius;
         int topLeftY = centerY - radius;
